@@ -6,17 +6,19 @@
 
 \hwtitle
   {Assignment 1}
-  {Will Crichton (wcrichto)} %% REPLACE THIS WITH YOUR NAME/ID
+  {Eric Wen} %% REPLACE THIS WITH YOUR NAME/ID
 
 \problem{Problem 1}
 
-Your answer goes here. Here's an example of writing a lambda calculus expression.
-
-$$
-Y = \fun{f}{\app
-  {(\fun{x}{\app{f}{(\app{x}{x})}})}
-  {(\fun{x}{\app{f}{(\app{x}{x})}})}}
-$$
+\begin{enumerate}
+\item $\fun{x}{x}$. Condition 1 is met.
+\item $\fun{x}{y}$. Condition 1 is met.
+\item $x$. Condition 2 is met.
+\item $\fun{y}{\app{(\fun{y'}{\app{y'}{y'}})}{y}}$. Condition 1 is met.
+\item $\app{(\fun{x}{\app{x}{x}})}{(\fun{x}{\app{x}{x}})}$. Condition 3 is met.
+\item $b$. Condition 2 is met.
+\item $\fun{y}{z}$. Condition 1 is met.
+\end{enumerate}
 
 \problem{Problem 3}
 
