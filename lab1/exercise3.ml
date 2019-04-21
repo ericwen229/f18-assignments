@@ -20,11 +20,29 @@ let rec typecheck (e : expr) : typ option =
   | Int n -> Some(IntT)
   | Bool n -> Some(BoolT)
   | Binop (_, e1, e2) ->
-    raise Unimplemented
+    (match typecheck e1 with
+     | Some(IntT) -> (
+         match typecheck e2 with
+         | Some(IntT) -> Some(IntT)
+         | _ -> None
+       )
+     | _ -> None)
   | Iszero e ->
-    raise Unimplemented
+    (match typecheck e with
+     | Some(IntT) -> Some(BoolT)
+     | _ -> None)
   | If (e1, e2, e3) ->
-    raise Unimplemented
+    (match typecheck e1 with
+     | Some(BoolT) -> (
+         match typecheck e2 with
+         | None -> None
+         | t2 -> (
+             match typecheck e3 with
+             | None -> None
+             | t3 -> if t2 = t3 then t2 else None
+           )
+       )
+     | _ -> None)
 ;;
 
 assert (typecheck (Int 0) = Some IntT);
@@ -48,12 +66,22 @@ let rec trystep (e : expr) : result =
         | Val ->
           let (Int n1, Int n2) = (e1, e2) in
           Step(Int(match binop with
-            | Add -> n1 + n2
-            | Sub -> n1 - n2))))
+              | Add -> n1 + n2
+              | Sub -> n1 - n2))))
   | Iszero e ->
-    raise Unimplemented
+    (match trystep e with
+     | Step e' -> Step(Iszero e')
+     | Val -> (
+         let (Int n) = e in
+         Step(Bool(n = 0))))
   | If (e1, e2, e3) ->
-    raise Unimplemented
+    (match trystep e1 with
+     | Step e1' -> Step(If(e1', e2, e3))
+     | Val -> (
+         let (Bool b) = e1 in
+         if b
+         then Step(e2)
+         else Step(e3)))
 
 let rec eval (e : expr) : expr =
   match trystep e with
@@ -63,3 +91,4 @@ let rec eval (e : expr) : expr =
 
 assert (eval (Int 0) = (Int 0));
 assert (eval (Binop(Add, Int 1, Int 2)) = (Int 3));
+assert (eval (Binop(Add, Binop(Add, Int 2, Int 3), Int 1)) = (Int 6))
