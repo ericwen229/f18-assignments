@@ -4,4 +4,6 @@
 *.out
 *.synctex.gz
 _minted*
+_build
+*.native
 
